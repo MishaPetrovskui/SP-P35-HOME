@@ -5,16 +5,9 @@ using System.Threading;
 class Task
 {
     const uint MB_OK = 0x00000000;
-    const int WM_CLOSE = 0x0010;
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     public static extern int MessageBox(IntPtr hWnd, string text, string caption, uint type);
-
-    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-    [DllImport("user32.dll")]
-    static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
     [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
     public static extern bool Beep(int frequency, int duration);
@@ -30,11 +23,6 @@ class Task
         };
 
         MessageBox(IntPtr.Zero, "Мене звати Михайло Петровський.\nЯ студент ІТ-спеціальності.", "GAME", MB_OK);
-        Thread messageThread = new Thread(() =>
-        {
-            MessageBox(IntPtr.Zero, "Я навчаюся програмуванню\nта люблю розробляти застосунки.", "GAME", MB_OK);
-        });
-        messageThread.Start();
         Thread musicThread = new Thread(() =>
         {
             for (int i = 0; i < melody.GetLength(0); i++)
@@ -44,18 +32,10 @@ class Task
                 else
                     Thread.Sleep(melody[i, 1]);
             }
-            IntPtr hWnd = IntPtr.Zero;
-            while (hWnd == IntPtr.Zero)
-            {
-                hWnd = FindWindow(null, "GAME");
-                Thread.Sleep(100);
-            }
-            SendMessage(hWnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
         });
-
         musicThread.Start();
+        MessageBox(IntPtr.Zero, "Я навчаюся програмуванню\nта люблю розробляти застосунки.", "GAME", MB_OK);
         musicThread.Join();
-
         MessageBox(IntPtr.Zero, "Це приклад програми\nз використанням MessageBox та Beep.", "GAME", MB_OK);
     }
 }
